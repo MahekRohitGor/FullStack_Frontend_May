@@ -17,9 +17,36 @@ export const login = createAsyncThunk('products/loginUser', async (request_data)
     return response;
 });
 
+export const event_list = createAsyncThunk('products/eventList', async (token) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = 'http://localhost:5000/v1/user/events/list';
+
+    const response = await secureFetch(url, {}, 'GET', api_key, token);
+    return response;
+});
+
+export const event_by_id = createAsyncThunk('products/evenId', async (request_data) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/user/events/${request_data.id}`;
+
+    const response = await secureFetch(url, {}, 'GET', api_key, request_data.token);
+    return response;
+});
+
+export const purchase_order = createAsyncThunk('products/purchaseOrder', async (request_data) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/user/events/purchase`;
+    
+
+    const response = await secureFetch(url, {}, 'GET', api_key, request_data.token);
+    return response;
+});
+
 const initialState = {
     user: null,
     token: null,
+    events: null,
+    event: null,
     error: null,
     loading: false,
 };
@@ -68,6 +95,40 @@ const userSlice = createSlice({
                 }
             })
             .addCase(login.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(event_list.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(event_list.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.code);
+                if (action.payload?.code == 200) {
+                    state.events = action.payload.data;
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "List Events failed";
+                }
+            })
+            .addCase(event_list.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(event_by_id.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(event_by_id.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.code);
+                if (action.payload?.code == 200) {
+                    state.event = action.payload.data;
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "Event fetch failed";
+                }
+            })
+            .addCase(event_by_id.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

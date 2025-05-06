@@ -41,19 +41,15 @@ function Signup() {
                 onSubmit={async (values, { resetForm, setSubmitting }) => {
                     setFormerror("");
                     setSuccess(false);
-                    console.log(values);
+                    console.log("Values in Signup: ", values);
                     const data_recv = {
                         full_name: values.full_name,
                         email_id: values.email_id,
                         password_: values.password_,
-                        phone_number: values.phone_number,
-                        code_id: values.code_id,
-                        device_token: '1234567890',
-                        device_type: 'android',
-                        time_zone: 'Asia/Kolkata',
-                        verify_with: 'e',
+                        profile_pic: values.profile_pic,
+                        about: values.about
                     };
-                    console.log(data_recv);
+                    console.log("Data received from form", data_recv);
                     try {
                         const response = await dispatch(signup(data_recv)).unwrap();
 
@@ -93,15 +89,15 @@ function Signup() {
                         </div>
 
                         <div className="mb-5">
-                            <label className="block mb-2 text-sm font-medium text-gray-900">Phone Number</label>
-                            <Field type="text" name="phone_number" className="p-2 border w-full" />
-                            <ErrorMessage name="phone_number" component="div" className="text-red-500 text-sm" />
+                            <label className="block mb-2 text-sm font-medium text-gray-900">Profile Image Link</label>
+                            <Field type="text" name="profile_pic" className="p-2 border w-full" />
+                            <ErrorMessage name="profile_pic" component="div" className="text-red-500 text-sm" />
                         </div>
 
                         <div className="mb-5">
-                            <label className="block mb-2 text-sm font-medium text-gray-900">Code ID</label>
-                            <Field type="text" name="code_id" className="p-2 border w-full" />
-                            <ErrorMessage name="code_id" component="div" className="text-red-500 text-sm" />
+                            <label className="block mb-2 text-sm font-medium text-gray-900">About</label>
+                            <Field type="text" name="about" className="p-2 border w-full" />
+                            <ErrorMessage name="about" component="div" className="text-red-500 text-sm" />
                         </div>
 
                         <button
