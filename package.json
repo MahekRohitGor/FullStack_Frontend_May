@@ -20,6 +20,7 @@
     "next-qrcode": "^2.5.1",
     "react": "^19.0.0",
     "react-countdown": "^2.3.6",
+    "react-csv": "^2.2.2",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "yup": "^1.6.1"
