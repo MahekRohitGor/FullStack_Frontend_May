@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { event_by_id } from '../../../store/slice/userSlice';
+import { event_by_id, purchase_ticket } from '../../../store/slice/userSlice';
 import Link from 'next/link';
 import Image from '../../../components/Image';
 
@@ -35,15 +35,14 @@ export default function EventDetails() {
         const data_to_send = {
             event_id: id,
             payment_type: paymentMethod,
-            qty: quantity
+            qty: quantity,
+            token: token
         }
+        await dispatch(purchase_ticket(data_to_send));
 
-        await dispatch(place_order({
-            payment_type: paymentMethod,
-            address_id: selectedAddress,
-            token
-        }));
-
+        setTimeout(()=>{
+            router.push("/user/home");
+        }, [3000]);
     }
 
     if (loading) return <div className="text-center py-8">Loading...</div>;
@@ -122,10 +121,11 @@ export default function EventDetails() {
                             <option value="cod">Cash on Delivery</option>
                             <option value="debit">Debit Card</option>
                             <option value="credit">Credit</option>
+                            <option value="upi">UPI</option>
                         </select>
                     </div>
 
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium mt-4">
+                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium mt-4" onClick={() => handle_purchase_ticket(id)}>
                         Book Tickets
                     </button>
                 </div>

@@ -58,6 +58,8 @@ export default function Home() {
                 Logout
             </button>
 
+            <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/user/home/order`}>View Order History</Link>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-5">
                 {events.map((event) => {
                     const firstImage = event.images ? event.images.split(',')[0] : null;

@@ -33,12 +33,24 @@ export const event_by_id = createAsyncThunk('products/evenId', async (request_da
     return response;
 });
 
-export const purchase_order = createAsyncThunk('products/purchaseOrder', async (request_data) => {
+export const purchase_ticket = createAsyncThunk('products/purchaseTicket', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
     const url = `http://localhost:5000/v1/user/events/purchase`;
-    
+    const send_data = {
+        event_id: request_data.event_id,
+        payment_type: request_data.payment_type,
+        qty: request_data.qty
+    }
 
-    const response = await secureFetch(url, {}, 'GET', api_key, request_data.token);
+    const response = await secureFetch(url, send_data, 'POST', api_key, request_data.token);
+    return response;
+});
+
+export const prev_purchase = createAsyncThunk('products/prevPurchase', async (token) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/user/history`;
+
+    const response = await secureFetch(url, {}, 'GET', api_key, token);
     return response;
 });
 
@@ -47,6 +59,8 @@ const initialState = {
     token: null,
     events: null,
     event: null,
+    ticket: null,
+    prevPurchase: null,
     error: null,
     loading: false,
 };
@@ -129,6 +143,40 @@ const userSlice = createSlice({
                 }
             })
             .addCase(event_by_id.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(purchase_ticket.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(purchase_ticket.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.code);
+                if (action.payload?.code == 200) {
+                    state.ticket = action.payload.data;
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "Purchase Ticket failed";
+                }
+            })
+            .addCase(purchase_ticket.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(prev_purchase.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(prev_purchase.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.code);
+                if (action.payload?.code == 200) {
+                    state.prevPurchase = action.payload.data;
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "Previous Purchase failed";
+                }
+            })
+            .addCase(prev_purchase.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
