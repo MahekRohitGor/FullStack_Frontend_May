@@ -1,30 +1,21 @@
-"use client";
-import React, { useEffect } from "react";
+"use client"
+import { useDispatch } from 'react-redux';
+import { dashboard } from '../../store/slice/adminSlice';
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { event_list, logout } from "../../store/slice/userSlice";
 import Link from "next/link";
-import EventCountdown from "../../components/Countdown";
 
-export default function Home() {
-    const router = useRouter();
+export default function Dashboard() {
     const dispatch = useDispatch();
-    const { loading, error, events  } = useSelector((state) => state.user);
-
-    const handleLogout = () => {
-        const token = JSON.parse(localStorage.getItem('token'));
-        dispatch(logout(token));
-        router.push("/user/login");
-    };
+    const router = useRouter();
+    const { loading, error, dashboard_data } = useSelector((state) => state.admin);
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'));
         if (!token) {
-            router.push('/user/login');
+            router.push('/admin/login');
             return;
         }
-
-        dispatch(event_list(token));
+        dispatch(dashboard(token));
     }, [dispatch, router]);
 
     if (loading) {
@@ -43,10 +34,10 @@ export default function Home() {
         );
     }
 
-    if (!events || events.length === 0) {
+    if (!dashboard_data || dashboard_data.length === 0) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <div className="text-gray-500 text-xl">No events found</div>
+                <div className="text-gray-500 text-xl">No Data found</div>
             </div>
         );
     }
@@ -55,16 +46,10 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8 text-center">Explore Events</h1>
 
-            <button onClick={handleLogout} className="text-white bg-red-700 py-2 px-4 rounded ml-4">
-                Logout
-            </button>
-
             <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/user/home/order`}>View Order History</Link>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-5">
-                {events.map((event) => {
-                    const firstImage = event.images ? event.images.split(',')[0] : null;
-                    return (
+                {events.map((event) => (
                     <div key={event.event_id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                         {firstImage && (
                                 <div className="h-48 bg-gray-200 flex items-center justify-center">
@@ -84,15 +69,12 @@ export default function Home() {
                             <p className="text-blue-600 font-bold mb-4">Rs. {event.event_price}</p>
                             <p className="text-blue-600 font-bold mb-4">Total Tickets: {event.total_tickets_avail}</p>
                             <p className="text-blue-600 font-bold mb-4">Available Tickets: {event.total_tickets_avail - event.total_tickets_sold}</p>
-                            <EventCountdown 
-                                eventDate={event.event_date}
-                                eventTime={event.event_time}
-                            />
                             <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/user/home/${event.event_id}`}>View Details</Link>
                         </div>
-                    </div>)
-                })}
+                    </div>
+                ))}
             </div>
         </div>
     );
 }
+

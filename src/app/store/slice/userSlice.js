@@ -54,6 +54,14 @@ export const prev_purchase = createAsyncThunk('products/prevPurchase', async (to
     return response;
 });
 
+export const logout = createAsyncThunk('products/logout', async (token) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/user/logout`;
+
+    const response = await secureFetch(url, {}, 'POST', api_key, token);
+    return response;
+});
+
 const initialState = {
     user: null,
     token: null,
@@ -177,6 +185,23 @@ const userSlice = createSlice({
                 }
             })
             .addCase(prev_purchase.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(logout.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(logout.fulfilled, (state, action) => {
+                state.events = null;
+                state.event = null;
+                state.ticket = null;
+                state.prevPurchase = null;
+                state.user = null;
+                state.loading = false;
+                state.error = null;
+                localStorage.removeItem('token');
+            })
+            .addCase(logout.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
