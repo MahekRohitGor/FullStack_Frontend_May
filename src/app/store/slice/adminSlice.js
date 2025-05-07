@@ -71,12 +71,25 @@ export const edit_event = createAsyncThunk('admin/editEvent', async (request_dat
     return response;
 });
 
+export const upload_images = createAsyncThunk('admin/imageUpload', async (request_data) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/admin/event/upload`;
+    const send_data = {
+        event_id: request_data.event_id,
+        image_link: request_data.image_link
+    }
+    const response = await secureFetch(url, send_data, 'POST', api_key, request_data.token);
+    return response;
+});
+
 const initialState = {
     admin: null,
     token: null,
     dashboard_data: null,
     event: null,
     created_event: null,
+    edited_event: null,
+    image: null,
     error: null,
     loading: false,
 };
@@ -185,12 +198,30 @@ const adminSlice = createSlice({
                 state.loading = false;
                 console.log(action.payload.code);
                 if (action.payload?.code == 200) {
+                    state.edited_event = action.payload.data;
                     state.error = null;
                 } else {
                     state.error = action.payload?.message || "Edit failed";
                 }
             })
             .addCase(edit_event.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            }).addCase(upload_images.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(upload_images.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.code);
+                if (action.payload?.code == 200) {
+                    state.image = action.payload.data;
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "Image Upload failed";
+                }
+            })
+            .addCase(upload_images.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

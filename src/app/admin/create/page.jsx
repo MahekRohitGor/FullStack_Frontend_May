@@ -97,14 +97,14 @@ export default function CreateEventPage() {
                 </div>
     
                 {error && <div className="text-red-500">{error}</div>}
-                {created_event && <div className="text-green-600">Event edited successfully!</div>}
+                {created_event && <div className="text-green-600">Event Created successfully!</div>}
     
                 <button
                   type="submit"
                   disabled={isSubmitting || loading}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
-                  {isSubmitting || loading ? "Updating..." : "Update Event"}
+                  {isSubmitting || loading ? "Creating..." : "Create Event"}
                 </button>
               </Form>
             )}

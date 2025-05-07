@@ -9,7 +9,7 @@ import EventCountdown from "../../components/Countdown";
 export default function Home() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { loading, error, events  } = useSelector((state) => state.user);
+    const { loading, error, events } = useSelector((state) => state.user);
 
     const handleLogout = () => {
         const token = JSON.parse(localStorage.getItem('token'));
@@ -65,32 +65,40 @@ export default function Home() {
                 {events.map((event) => {
                     const firstImage = event.images ? event.images.split(',')[0] : null;
                     return (
-                    <div key={event.event_id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                        {firstImage && (
+                        <div key={event.event_id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                            {firstImage ? (
                                 <div className="h-48 bg-gray-200 flex items-center justify-center">
-                                    <img 
-                                        src={firstImage} 
+                                    <img
+                                        src={firstImage}
                                         alt={event.event_title}
                                         className="h-full w-full object-cover"
                                     />
                                 </div>
+                            ): (
+                                <div className="h-48 bg-gray-200 flex items-center justify-center">
+                                <img
+                                    src="https://placehold.co/600x400"
+                                    alt={event.event_title}
+                                    className="h-full w-full object-cover"
+                                />
+                            </div>
                             )}
-                        <div className="p-4">
-                            <h2 className="text-xl font-semibold mb-2">{event.event_title}</h2>
-                            <p className="text-gray-600 mb-2">{event.event_desc}</p>
-                            <p className="text-blue-600 font-bold mb-4">Date: {event.event_date}</p>
-                            <p className="text-blue-600 font-bold mb-4">Time: {event.event_time}</p>
-                            <p className="text-blue-600 font-bold mb-4">Location: {event.event_address}</p>
-                            <p className="text-blue-600 font-bold mb-4">Rs. {event.event_price}</p>
-                            <p className="text-blue-600 font-bold mb-4">Total Tickets: {event.total_tickets_avail}</p>
-                            <p className="text-blue-600 font-bold mb-4">Available Tickets: {event.total_tickets_avail - event.total_tickets_sold}</p>
-                            <EventCountdown 
-                                eventDate={event.event_date}
-                                eventTime={event.event_time}
-                            />
-                            <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/user/home/${event.event_id}`}>View Details</Link>
-                        </div>
-                    </div>)
+                            <div className="p-4">
+                                <h2 className="text-xl font-semibold mb-2">{event.event_title}</h2>
+                                <p className="text-gray-600 mb-2">{event.event_desc}</p>
+                                <p className="text-blue-600 font-bold mb-4">Date: {event.event_date}</p>
+                                <p className="text-blue-600 font-bold mb-4">Time: {event.event_time}</p>
+                                <p className="text-blue-600 font-bold mb-4">Location: {event.event_address}</p>
+                                <p className="text-blue-600 font-bold mb-4">Rs. {event.event_price}</p>
+                                <p className="text-blue-600 font-bold mb-4">Total Tickets: {event.total_tickets_avail}</p>
+                                <p className="text-blue-600 font-bold mb-4">Available Tickets: {event.total_tickets_avail - event.total_tickets_sold}</p>
+                                <EventCountdown
+                                    eventDate={event.event_date}
+                                    eventTime={event.event_time}
+                                />
+                                <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/user/home/${event.event_id}`}>View Details</Link>
+                            </div>
+                        </div>)
                 })}
             </div>
         </div>

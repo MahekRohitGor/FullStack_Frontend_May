@@ -75,6 +75,8 @@ export default function Events() {
                             <p className="text-blue-600 font-bold mb-4">Available Tickets: {data.total_tickets_avail - data.total_tickets_sold}</p>
                             <button className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-colors duration-300 mb-5" onClick={() => handleDelete(data.event_id)}>Delete</button>
                             <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/admin/edit/${data.event_id}`}>Edit Events</Link>
+                            <Link className="ml-4 mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/admin/upload/${data.event_id}`}>Upload Event Images</Link>
+
                         </div>
                     </div>
                 ))}

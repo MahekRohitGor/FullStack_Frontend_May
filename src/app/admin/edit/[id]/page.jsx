@@ -11,7 +11,7 @@ export default function CreateEventPage() {
     const params = useParams();
     const dispatch = useDispatch();
     const router = useRouter();
-    const { loading, error, created_event } = useSelector((state) => state.admin);
+    const { loading, error, edited_event } = useSelector((state) => state.admin);
     const [adminToken, setAdminToken] = useState(null);
 
     useEffect(() => {
@@ -99,14 +99,14 @@ export default function CreateEventPage() {
                         </div>
 
                         {error && <div className="text-red-500">{error}</div>}
-                        {created_event && <div className="text-green-600">Event created successfully!</div>}
+                        {edited_event && <div className="text-green-600">Event Updated successfully!</div>}
 
                         <button
                             type="submit"
                             disabled={isSubmitting || loading}
                             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                         >
-                            {isSubmitting || loading ? "Creating..." : "Create Event"}
+                            {isSubmitting || loading ? "Updating..." : "Update Event"}
                         </button>
                     </Form>
                 )}
