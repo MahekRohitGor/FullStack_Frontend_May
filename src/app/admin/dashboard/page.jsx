@@ -1,6 +1,6 @@
 "use client"
 import { useDispatch, useSelector } from 'react-redux';
-import { dashboard } from '../../store/slice/adminSlice';
+import { dashboard, logout } from '../../store/slice/adminSlice';
 import { useRouter } from "next/navigation";
 import { useEffect } from 'react';
 import Link from "next/link";
@@ -9,6 +9,12 @@ export default function Dashboard() {
     const dispatch = useDispatch();
     const router = useRouter();
     const { loading, error, dashboard_data } = useSelector((state) => state.admin);
+
+    const handleLogout = () => {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        dispatch(logout(token));
+        router.push("/admin/login");
+    };
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('admin_token'));
@@ -56,7 +62,9 @@ export default function Dashboard() {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8 text-center">Admin Dashboard</h1>
-
+            <button onClick={handleLogout} className="text-white bg-red-700 py-2 px-4 rounded ml-4">
+                Logout
+            </button>
             <Link className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300" href={`/admin/events`}>Manage Events</Link>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-5">

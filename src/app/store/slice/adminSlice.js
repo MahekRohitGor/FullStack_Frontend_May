@@ -83,6 +83,14 @@ export const upload_images = createAsyncThunk('admin/imageUpload', async (reques
     return response;
 });
 
+export const logout = createAsyncThunk('products/logout', async (token) => {
+    const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
+    const url = `http://localhost:5000/v1/admin/logout`;
+
+    const response = await secureFetch(url, {}, 'POST', api_key, token);
+    return response;
+});
+
 const initialState = {
     admin: null,
     token: null,
@@ -309,7 +317,40 @@ const adminSlice = createSlice({
                     showConfirmButton: false,
                     timer: 1500
                 });
-            })
+            }).addCase(logout.pending, (state) => {
+                            state.loading = true;
+                            state.error = null;
+                        })
+                        .addCase(logout.fulfilled, (state, action) => {
+                            state.dashboard_data = null;
+                            state.event = null;
+                            state.created_event = null;
+                            state.edited_event = null;
+                            state.admin = null;
+                            state.token = null;
+                            state.image = null;
+                            state.loading = false;
+                            state.error = null;
+                            localStorage.removeItem('admin_token');
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: "LOGOUT SUCCESS",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .addCase(logout.rejected, (state, action) => {
+                            state.loading = false;
+                            state.error = action.error.message;
+                            Swal.fire({
+                                position: "center",
+                                icon: "error",
+                                title: "LOGOUT ERROR",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
     }
 
 });
