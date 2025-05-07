@@ -1,5 +1,6 @@
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit');
 import { secureFetch } from '@/app/utilities/secureFetch';
+import Swal from 'sweetalert2';
 
 export const login = createAsyncThunk('admin/loginAdmin', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
@@ -101,9 +102,9 @@ const adminSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(login.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
+            state.loading = true;
+            state.error = null;
+        })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
                 console.log(action.payload.code);
@@ -167,13 +168,34 @@ const adminSlice = createSlice({
                 if (action.payload?.code == 200) {
                     state.created_event = action.payload.data;
                     state.error = null;
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Event Create Success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 } else {
                     state.error = action.payload?.message || "Create Event failed";
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Event Create Error",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             })
             .addCase(create_event.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Event Create Error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }).addCase(delete_event.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -183,13 +205,34 @@ const adminSlice = createSlice({
                 console.log(action.payload.code);
                 if (action.payload?.code == 200) {
                     state.error = null;
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Event Delete Success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 } else {
                     state.error = action.payload?.message || "Delete failed";
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Event Delete Error",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             })
             .addCase(delete_event.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Event Delete Error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }).addCase(edit_event.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -200,13 +243,34 @@ const adminSlice = createSlice({
                 if (action.payload?.code == 200) {
                     state.edited_event = action.payload.data;
                     state.error = null;
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Event Edit Success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 } else {
                     state.error = action.payload?.message || "Edit failed";
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Event Edit Error",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             })
             .addCase(edit_event.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Event Edit Error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }).addCase(upload_images.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -217,13 +281,34 @@ const adminSlice = createSlice({
                 if (action.payload?.code == 200) {
                     state.image = action.payload.data;
                     state.error = null;
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Upload Image Success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 } else {
                     state.error = action.payload?.message || "Image Upload failed";
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Upload Image Error",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             })
             .addCase(upload_images.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Upload Image Error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             })
     }
 

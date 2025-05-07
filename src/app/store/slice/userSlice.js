@@ -37,9 +37,9 @@ export const purchase_ticket = createAsyncThunk('products/purchaseTicket', async
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
     const url = `http://localhost:5000/v1/user/events/purchase`;
     const send_data = {
-        event_id: request_data.event_id,
+        qty: request_data.qty,
         payment_type: request_data.payment_type,
-        qty: request_data.qty
+        event_id: request_data.event_id
     }
 
     const response = await secureFetch(url, send_data, 'POST', api_key, request_data.token);
@@ -49,8 +49,9 @@ export const purchase_ticket = createAsyncThunk('products/purchaseTicket', async
 export const prev_purchase = createAsyncThunk('products/prevPurchase', async (token) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
     const url = `http://localhost:5000/v1/user/history`;
-
+    console.log("Token: ", token);
     const response = await secureFetch(url, {}, 'GET', api_key, token);
+    console.log("Response: ", response);
     return response;
 });
 
@@ -83,18 +84,18 @@ const userSlice = createSlice({
             state.loading = true;
             state.error = null;
         }).addCase(signup.fulfilled, (state, action) => {
-                state.loading = false;
-                console.log(action.payload.code);
-                if (action.payload?.code == 200) {
-                    state.user = action.payload.data.userInfo;
-                    state.token = action.payload.data.user_token;
-                    state.error = null;
-                } else {
-                    state.user = null;
-                    state.token = null;
-                    state.error = action.payload?.message || "Signup failed";
-                }
-            })
+            state.loading = false;
+            console.log(action.payload.code);
+            if (action.payload?.code == 200) {
+                state.user = action.payload.data.userInfo;
+                state.token = action.payload.data.user_token;
+                state.error = null;
+            } else {
+                state.user = null;
+                state.token = null;
+                state.error = action.payload?.message || "Signup failed";
+            }
+        })
             .addCase(signup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
@@ -176,12 +177,11 @@ const userSlice = createSlice({
             })
             .addCase(prev_purchase.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log(action.payload.code);
                 if (action.payload?.code == 200) {
-                    state.prevPurchase = action.payload.data;
+                    state.prevPurchase = action.payload?.data;
                     state.error = null;
                 } else {
-                    state.error = action.payload?.message || "Previous Purchase failed";
+                    state.prevPurchase = [];
                 }
             })
             .addCase(prev_purchase.rejected, (state, action) => {

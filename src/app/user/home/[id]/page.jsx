@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { event_by_id, purchase_ticket } from '../../../store/slice/userSlice';
 import Link from 'next/link';
 import Image from '../../../components/Image';
+import Swal from 'sweetalert2';
 
 export default function EventDetails() {
     const router = useRouter();
@@ -21,12 +22,32 @@ export default function EventDetails() {
             router.push('/user/login');
             return;
         }
+        if (localStorage.getItem('admin_token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Admin Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setTimeout(() => {
+                router.push('/admin/dashboard');
+                return;
+            }, [2000]);
+        }
+        
         dispatch(event_by_id({ id, token }));
     }, [dispatch, router, id]);
 
     const handle_purchase_ticket = async (id) => {
-        if(!paymentMethod){
-            alert("Please Select Payment Method");
+        if (!paymentMethod) {
+            Swal.fire({
+                position: "center",
+                icon: "warning",
+                title: "Please Select Payment Method",
+                showConfirmButton: false,
+                timer: 1500
+            });
             return;
         }
 
@@ -40,7 +61,15 @@ export default function EventDetails() {
         }
         await dispatch(purchase_ticket(data_to_send));
 
-        setTimeout(()=>{
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Ticket Purchased Successfully",
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        setTimeout(() => {
             router.push("/user/home");
         }, [3000]);
     }
@@ -77,7 +106,7 @@ export default function EventDetails() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <h3 className="font-semibold">Date</h3>
-                            <p>{event.event_date}</p>
+                            <p>{event.event_date.split('T')[0]}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold">Time</h3>

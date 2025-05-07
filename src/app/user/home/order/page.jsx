@@ -18,6 +18,19 @@ export default function PreviousOrders() {
             router.push('/user/login');
             return;
         }
+        if (localStorage.getItem('admin_token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Admin Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setTimeout(() => {
+                router.push('/admin/dashboard');
+                return;
+            }, [2000]);
+        }
         dispatch(prev_purchase(token));
     }, [dispatch, router]);
 
@@ -25,7 +38,7 @@ export default function PreviousOrders() {
         'Event Title': purchase.event_title,
         'Event Description': purchase.event_desc,
         'Status': purchase.purchase_status,
-        'Date': purchase.event_date,
+        'Date': purchase.event_date.split('T')[0],
         'Time': purchase.event_time,
         'Payment Type': purchase.payment_type,
         'Amount': purchase.amount,
@@ -45,7 +58,7 @@ export default function PreviousOrders() {
 
     if (loading) return <div className="text-center py-8">Loading...</div>;
     if (error) return <div className="text-center py-8 text-red-500">{error}</div>;
-    if (!prevPurchase) return <div className="text-center py-8">Purchase History not found</div>;
+    if (!prevPurchase || prevPurchase.length === 0) return <div className="text-center py-8">Purchase History not found</div>;
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -68,7 +81,7 @@ export default function PreviousOrders() {
                             <p className="text-gray-600 mb-2">{prev.event_desc}</p>
                             <p className="text-gray-600 mb-2">CODE: {prev.qrcode}</p>
                             <p className="text-gray-600 mb-2">Status: {prev.purchase_status}</p>
-                            <p className="text-blue-600 font-bold mb-4">Date: {prev.event_date}</p>
+                            <p className="text-blue-600 font-bold mb-4">Date: {prev.event_date.split('T')[0]}</p>
                             <p className="text-blue-600 font-bold mb-4">Time: {prev.event_time}</p>
                             <p className="text-blue-600 font-bold mb-4">Payment Type: {prev.payment_type}</p>
                             <p className="text-blue-600 font-bold mb-4">Rs. {prev.amount}</p>

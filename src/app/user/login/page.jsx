@@ -4,14 +4,36 @@ import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { login } from '../../store/slice/userSlice';
 import { useRouter } from "next/navigation";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from "next/link";
+import Swal from 'sweetalert2';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [isAdminLogin, setAdminLogin] = useState(false);
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('token'));
+        if (token) {
+            router.push('/user/home');
+            return;
+        }
+
+        if (localStorage.getItem('admin_token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Admin Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setAdminLogin(true);
+            return;
+        }
+    }, [router]);
 
     const initialValues = {
         email_id: '',
@@ -30,12 +52,33 @@ const LoginForm = () => {
             const response = await dispatch(login(values)).unwrap();
             if (response?.code === 200) {
                 setSuccess(true);
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Login Successful",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 router.push('/user/home');
             } else {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Login Failed",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 setError(response?.message || 'Login failed');
             }
         } catch (err) {
             console.error('Login error:', err);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Something went wrong",
+                showConfirmButton: false,
+                timer: 1500
+            });
             setError('Something went wrong');
         } finally {
             setSubmitting(false);
@@ -67,8 +110,8 @@ const LoginForm = () => {
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mb-5"
+                            disabled={isSubmitting || isAdminLogin}
+                            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mb-5 disabled:opacity-75"
                         >
                             {isSubmitting ? 'Logging in...' : 'Login'}
                         </button>

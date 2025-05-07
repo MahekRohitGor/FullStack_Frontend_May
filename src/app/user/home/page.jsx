@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { event_list, logout } from "../../store/slice/userSlice";
 import Link from "next/link";
 import EventCountdown from "../../components/Countdown";
+import Swal from 'sweetalert2';
 
 export default function Home() {
     const router = useRouter();
@@ -14,6 +15,13 @@ export default function Home() {
     const handleLogout = () => {
         const token = JSON.parse(localStorage.getItem('token'));
         dispatch(logout(token));
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Logout Success",
+            showConfirmButton: false,
+            timer: 1500
+        });
         router.push("/user/login");
     };
 
@@ -22,6 +30,20 @@ export default function Home() {
         if (!token) {
             router.push('/user/login');
             return;
+        }
+
+        if (localStorage.getItem('admin_token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Admin Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setTimeout(() => {
+                router.push('/admin/dashboard');
+                return;
+            }, [2000]);
         }
 
         dispatch(event_list(token));
@@ -74,19 +96,19 @@ export default function Home() {
                                         className="h-full w-full object-cover"
                                     />
                                 </div>
-                            ): (
+                            ) : (
                                 <div className="h-48 bg-gray-200 flex items-center justify-center">
-                                <img
-                                    src="https://placehold.co/600x400"
-                                    alt={event.event_title}
-                                    className="h-full w-full object-cover"
-                                />
-                            </div>
+                                    <img
+                                        src="https://placehold.co/600x400"
+                                        alt={event.event_title}
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
                             )}
                             <div className="p-4">
                                 <h2 className="text-xl font-semibold mb-2">{event.event_title}</h2>
                                 <p className="text-gray-600 mb-2">{event.event_desc}</p>
-                                <p className="text-blue-600 font-bold mb-4">Date: {event.event_date}</p>
+                                <p className="text-blue-600 font-bold mb-4">Date: {event.event_date.split('T')[0]}</p>
                                 <p className="text-blue-600 font-bold mb-4">Time: {event.event_time}</p>
                                 <p className="text-blue-600 font-bold mb-4">Location: {event.event_address}</p>
                                 <p className="text-blue-600 font-bold mb-4">Rs. {event.event_price}</p>

@@ -23,10 +23,18 @@ export async function secureFetch(url, request_data = {}, method = 'POST', api_k
             data: encData
         };
 
-        const resp = await axios(axiosConfig);
-        const result = resp.data;
-        const data_ = decrypt(result);
-        return data_;
+        try {
+            const resp = await axios(axiosConfig);
+            console.log("resp: ", resp);
+            const result = resp.data;
+            console.log("result: ", result);
+            const data_ = decrypt(result);
+            console.log("Data: ", data_);
+            return data_;
+        } catch (error) {
+            console.log("Error in secure Fetch: ", error);
+        }
+
 
     } catch (error) {
         console.error(error);

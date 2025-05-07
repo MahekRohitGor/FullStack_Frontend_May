@@ -19,6 +19,16 @@ export default function CreateEventPage() {
         if (!token) {
             router.push("/admin/login");
         } else {
+            if (localStorage.getItem('token')) {
+                Swal.fire({
+                    position: "center",
+                    icon: "info",
+                    title: "User Already Login",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                return;
+            }
             setAdminToken(token);
         }
     }, [router, dispatch]);

@@ -16,6 +16,16 @@ export default function Events() {
             router.push('/admin/login');
             return;
         }
+        if (localStorage.getItem('token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "User Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return;
+        }
         dispatch(events(token));
     }, [dispatch, router]);
 
@@ -67,7 +77,7 @@ export default function Events() {
                         <div className="p-4">
                             <h2 className="text-xl font-semibold mb-2">{data.event_title}</h2>
                             <p className="text-gray-600 mb-2">{data.event_desc}</p>
-                            <p className="text-blue-600 font-bold mb-4">Date: {data.event_date}</p>
+                            <p className="text-blue-600 font-bold mb-4">Date: {data.event_date.split('T')[0]}</p>
                             <p className="text-blue-600 font-bold mb-4">Time: {data.event_time}</p>
                             <p className="text-blue-600 font-bold mb-4">Location: {data.event_address}</p>
                             <p className="text-blue-600 font-bold mb-4">Rs. {data.event_price}</p>

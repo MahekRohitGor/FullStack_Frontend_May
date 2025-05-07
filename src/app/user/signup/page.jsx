@@ -1,19 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../store/slice/userSlice";
+import Swal from 'sweetalert2';
 
 function Signup() {
     const router = useRouter();
     const dispatch = useDispatch();
 
-    const { error} = useSelector((state) => state.user);
+    const { error } = useSelector((state) => state.user);
 
     const [formerror, setFormerror] = useState("");
     const [success, setSuccess] = useState(false);
+    const [isAdminLogin, setAdminLogin] = useState(false);
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('token'));
+        if (token) {
+            router.push('/user/home');
+            return;
+        }
+        
+        if(localStorage.getItem('admin_token')){
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "Admin Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setAdminLogin(true);
+            return;
+        }
+    }, [router]);
 
     const initialState = {
         full_name: "",
@@ -55,13 +77,34 @@ function Signup() {
 
                         if (response?.code === 200) {
                             setSuccess(true);
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: "Signup Successful",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                             router.push("/user/login");
                         } else {
+                            Swal.fire({
+                                position: "center",
+                                icon: "error",
+                                title: "Signup Failed",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                             setFormerror(response?.message || "Signup failed");
                         }
                         resetForm();
                     } catch (err) {
                         console.error("Signup error:", err);
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Something went wrong",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                         setFormerror("Something went wrong");
                     } finally {
                         setSubmitting(false);
@@ -102,8 +145,8 @@ function Signup() {
 
                         <button
                             type="submit"
-                            className="p-2 mr-4 rounded bg-green-600 text-white hover:bg-green-500"
-                            disabled={isSubmitting}
+                            className="p-2 mr-4 rounded bg-green-600 text-white hover:bg-green-500 disabled:opacity-75"
+                            disabled={isSubmitting || isAdminLogin}
                         >
                             Sign Up
                         </button>

@@ -16,6 +16,16 @@ export default function Dashboard() {
             router.push('/admin/login');
             return;
         }
+        if (localStorage.getItem('token')) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "User Already Login",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return;
+        }
         dispatch(dashboard(token));
     }, [dispatch, router]);
 
