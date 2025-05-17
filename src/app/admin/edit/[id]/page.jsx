@@ -38,7 +38,7 @@ export default function CreateEventPage() {
         event_price: Yup.number().required("Price is required").positive("Price must be positive"),
         event_desc: Yup.string().required("Description is required"),
         event_address: Yup.string().required("Address is required"),
-        total_tickets_avail: Yup.number().required("Total Available Tickets is required"),
+        // total_tickets_avail: Yup.number().required("Total Available Tickets is required"),
         event_date: Yup.date().required("Date is Required")
     });
 
@@ -64,7 +64,7 @@ export default function CreateEventPage() {
                     event_price: "",
                     event_desc: "",
                     event_address: "",
-                    total_tickets_avail: "",
+                    // total_tickets_avail: "",
                     event_date: ""
                 }}
                 validationSchema={validationSchema}
@@ -96,11 +96,11 @@ export default function CreateEventPage() {
                             <ErrorMessage name="event_address" component="div" className="text-red-500 text-sm" />
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className="block mb-1 font-medium">Total Tickets Available</label>
                             <Field name="total_tickets_avail" className="border p-2 w-full rounded" />
                             <ErrorMessage name="total_tickets_avail" component="div" className="text-red-500 text-sm" />
-                        </div>
+                        </div> */}
 
                         <div>
                             <label className="block mb-1 font-medium">Event Date</label>

@@ -1,9 +1,10 @@
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit');
 import { secureFetch } from '@/app/utilities/secureFetch';
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const signup = createAsyncThunk('products/signupUser', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = 'http://localhost:5000/v1/user/signup';
+    const url = `${baseUrl}/v1/user/signup`;
 
     const response = await secureFetch(url, request_data, 'POST', api_key);
     return response;
@@ -11,7 +12,7 @@ export const signup = createAsyncThunk('products/signupUser', async (request_dat
 
 export const login = createAsyncThunk('products/loginUser', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = 'http://localhost:5000/v1/user/login';
+    const url = `${baseUrl}/v1/user/login`;
 
     const response = await secureFetch(url, request_data, 'POST', api_key);
     return response;
@@ -19,7 +20,7 @@ export const login = createAsyncThunk('products/loginUser', async (request_data)
 
 export const event_list = createAsyncThunk('products/eventList', async (token) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = 'http://localhost:5000/v1/user/events/list';
+    const url = `${baseUrl}/v1/user/events/list`;
 
     const response = await secureFetch(url, {}, 'GET', api_key, token);
     return response;
@@ -27,7 +28,7 @@ export const event_list = createAsyncThunk('products/eventList', async (token) =
 
 export const event_by_id = createAsyncThunk('products/evenId', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = `http://localhost:5000/v1/user/events/${request_data.id}`;
+    const url = `${baseUrl}/v1/user/events/${request_data.id}`;
 
     const response = await secureFetch(url, {}, 'GET', api_key, request_data.token);
     return response;
@@ -35,7 +36,7 @@ export const event_by_id = createAsyncThunk('products/evenId', async (request_da
 
 export const purchase_ticket = createAsyncThunk('products/purchaseTicket', async (request_data) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = `http://localhost:5000/v1/user/events/purchase`;
+    const url = `${baseUrl}/v1/user/events/purchase`;
     const send_data = {
         qty: request_data.qty,
         payment_type: request_data.payment_type,
@@ -48,7 +49,7 @@ export const purchase_ticket = createAsyncThunk('products/purchaseTicket', async
 
 export const prev_purchase = createAsyncThunk('products/prevPurchase', async (token) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = `http://localhost:5000/v1/user/history`;
+    const url = `${baseUrl}/v1/user/history`;
     console.log("Token: ", token);
     const response = await secureFetch(url, {}, 'GET', api_key, token);
     console.log("Response: ", response);
@@ -57,7 +58,7 @@ export const prev_purchase = createAsyncThunk('products/prevPurchase', async (to
 
 export const logout = createAsyncThunk('products/logout', async (token) => {
     const api_key = "b77aa44e2f6b79a09835de8f4cc84dac";
-    const url = `http://localhost:5000/v1/user/logout`;
+    const url = `${baseUrl}/v1/user/logout`;
 
     const response = await secureFetch(url, {}, 'POST', api_key, token);
     return response;
